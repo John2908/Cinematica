@@ -1,4 +1,3 @@
-// src/mru/mru.service.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { MRUDto, CalculoMRU } from './dto/Mru.dto';
 
