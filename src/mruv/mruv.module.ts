@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MruvService } from './mruv.service';
 import { MruvController } from './mruv.controller';
+import { MruvService } from './mruv.service';
 
 @Module({
   controllers: [MruvController],

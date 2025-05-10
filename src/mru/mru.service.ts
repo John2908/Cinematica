@@ -1,36 +1,43 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { MruDto } from './dto/Mru.dto';
-import { MruModel } from './dto/Mru.model';
+// src/mru/mru.service.ts
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { MRUDto, CalculoMRU } from './dto/Mru.dto';
 
 @Injectable()
 export class MruService {
-    calcular(datos: MruDto): MruModel {
-        let { PosicionInicial, PosicionFinal, Velocidad, Tiempo } = datos;
+  calcular(dto: MRUDto) {
+    const { tipoCalculo } = dto;
 
-        //convertidor de undefined a null 
-        let x0 = PosicionInicial ?? null;
-        let x = PosicionFinal ?? null;
-        let v = Velocidad ?? null;
-        let t = Tiempo ?? null;
-        
-        //caculador de datos
-        if (x0 !==null && v !==null && t !==null && x ===null) {
-            x = x0 + v * t;
-        } else if (x0 !==null && x !==null && t !==null && v ===null) {
-            v = (x - x0) / t;
-        } else if (x0 !==null && x !==null && v !==null && t ===null) {
-            t = (x - x0) / v;
-        } else if (x !==null && v !==null && t !==null && x0 === null){
-            x0 = x - v * t;
-        } else {
-            throw new BadRequestException('Los datos son insuficientes para poder calcular')
+    switch (tipoCalculo) {
+      case CalculoMRU.VELOCIDAD:
+        if (dto.distanciaFinal == null || dto.distanciaInicial == null || dto.tiempoFinal == null || dto.tiempoInicial == null) {
+          throw new BadRequestException('Faltan datos para calcular la velocidad.');
         }
+        const deltaX = dto.distanciaFinal - dto.distanciaInicial;
+        const deltaT = dto.tiempoFinal - dto.tiempoInicial;
+        if (deltaT === 0) {
+          throw new BadRequestException('El tiempo no puede ser cero.');
+        }
+        return { resultado: deltaX / deltaT, unidad: 'm/s' };
 
-        return new MruModel({
-            PosicionInicial: x0 ?? PosicionInicial ?? 0,
-            PosicionFinal: x ?? 0,
-            Velocidad: v ?? 0,
-            Tiempo: t ?? 0,
-        });
+      case CalculoMRU.POSICION_FINAL:
+        if (dto.posicionInicial == null || dto.velocidad == null || dto.tiempoFinal == null || dto.tiempoInicial == null) {
+          throw new BadRequestException('Faltan datos para calcular la posición final.');
+        }
+        const tiempoTranscurrido = dto.tiempoFinal - dto.tiempoInicial;
+        return { resultado: dto.posicionInicial + dto.velocidad * tiempoTranscurrido, unidad: 'm' };
+
+      case CalculoMRU.TIEMPO:
+        if (dto.distanciaFinal == null || dto.distanciaInicial == null || dto.velocidad == null) {
+          throw new BadRequestException('Faltan datos para calcular el tiempo.');
+        }
+        const distancia = dto.distanciaFinal - dto.distanciaInicial;
+        if (dto.velocidad === 0) {
+          throw new BadRequestException('La velocidad no puede ser cero.');
+        }
+        return { resultado: distancia / dto.velocidad, unidad: 's' };
+
+      default:
+        throw new BadRequestException('Tipo de cálculo no válido.');
     }
+  }
 }

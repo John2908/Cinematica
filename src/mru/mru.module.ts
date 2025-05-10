@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MruService } from './mru.service';
 import { MruController } from './mru.controller';
+import { MruService } from './mru.service';
 
 @Module({
   controllers: [MruController],
   providers: [MruService],
 })
 export class MruModule {}
+
+
