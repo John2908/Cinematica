@@ -1,5 +1,12 @@
 import { IsNumber, IsOptional, IsString, IsEnum } from "class-validator";
 
+export enum CalculoMRUV {
+  POSICION_FINAL = 'posicionFinal',
+  VELOCIDAD_FINAL = 'velocidadFinal',
+  TIEMPO = 'tiempo',
+  ACELERACION = 'aceleracion',
+}
+
 export class MRUVDto {
   @IsOptional()
   @IsNumber()
@@ -33,9 +40,8 @@ export class MRUVDto {
   @IsNumber()
   aceleracionFinal?: number;
 
-  @IsString()
-  @IsEnum(['posicionFinal', 'velocidadFinal', 'tiempo', 'aceleracion'], {
-    message: 'Tipo de cálculo no válido.',
+  @IsEnum(CalculoMRUV, {
+    message: 'Tipo de cálculo no válido. Opciones válidas: posicionFinal, velocidadFinal, tiempo, aceleracion',
   })
-  tipoCalculo: 'posicionFinal' | 'velocidadFinal' | 'tiempo' | 'aceleracion';
+  tipoCalculo: CalculoMRUV;
 }

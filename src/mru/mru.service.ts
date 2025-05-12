@@ -11,12 +11,12 @@ export class MruService {
         if (dto.distanciaFinal == null || dto.distanciaInicial == null || dto.tiempoFinal == null || dto.tiempoInicial == null) {
           throw new BadRequestException('Faltan datos para calcular la velocidad.');
         }
-        const deltaX = dto.distanciaFinal - dto.distanciaInicial;
-        const deltaT = dto.tiempoFinal - dto.tiempoInicial;
-        if (deltaT === 0) {
+        const Dist = dto.distanciaFinal - dto.distanciaInicial;
+        const Time = dto.tiempoFinal - dto.tiempoInicial;
+        if (Time === 0) {
           throw new BadRequestException('El tiempo no puede ser cero.');
         }
-        return { resultado: deltaX / deltaT, unidad: 'm/s' };
+        return { resultado: Dist / Time, unidad: 'm/s' };
 
       case CalculoMRU.POSICION_FINAL:
         if (dto.posicionInicial == null || dto.velocidad == null || dto.tiempoFinal == null || dto.tiempoInicial == null) {

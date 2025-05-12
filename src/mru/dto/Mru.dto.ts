@@ -42,7 +42,9 @@ export class MRUDto {
   @Min(0)
   posicionFinal?: number;
 
-  @IsEnum(MRUDto)
+  @IsEnum(CalculoMRU, {
+    message: 'Tipo de cálculo no valido. opciones validas: velocidad, posicion_final y tiempo',
+  })
   tipoCalculo: CalculoMRU;
 }
 

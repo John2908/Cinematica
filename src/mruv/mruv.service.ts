@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { MRUVDto } from './dto/mruv.dto';
+import { MRUVDto, CalculoMRUV } from './dto/mruv.dto'; 
 
 @Injectable()
 export class MruvService {
@@ -21,28 +21,28 @@ export class MruvService {
     let unidad: string;
 
     switch (tipoCalculo) {
-      case 'posicionFinal':
+      case CalculoMRUV.POSICION_FINAL:
         if (posicionInicial == null || velocidadInicial == null || tiempoFinal == null || aceleracionInicial == null)
           throw new BadRequestException('Faltan datos para calcular la posición final.');
         resultado = posicionInicial + velocidadInicial * t + 0.5 * a * t * t;
         unidad = 'm';
         break;
 
-      case 'velocidadFinal':
+      case CalculoMRUV.VELOCIDAD_FINAL: 
         if (velocidadInicial == null || aceleracionInicial == null || tiempoFinal == null || tiempoInicial == null)
           throw new BadRequestException('Faltan datos para calcular la velocidad final.');
         resultado = velocidadInicial + a * t;
         unidad = 'm/s';
         break;
 
-      case 'tiempo':
+      case CalculoMRUV.TIEMPO: 
         if (velocidadInicial == null || velocidadFinal == null || aceleracionInicial == null)
           throw new BadRequestException('Faltan datos para calcular el tiempo.');
         resultado = (velocidadFinal - velocidadInicial) / a;
         unidad = 's';
         break;
 
-      case 'aceleracion':
+      case CalculoMRUV.ACELERACION: 
         if (velocidadInicial == null || velocidadFinal == null || tiempoFinal == null || tiempoInicial == null)
           throw new BadRequestException('Faltan datos para calcular la aceleración.');
         resultado = (velocidadFinal - velocidadInicial) / t;
@@ -59,4 +59,5 @@ export class MruvService {
     };
   }
 }
+
 
